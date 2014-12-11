@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+<title>4G LTE</title>
+<script type="text/javascript" src="js/panino.js"></script>
+<script type="text/javascript" src="js/comunes.js"></script>
+<script type="text/javascript" src="js/paninoAJAX.js"></script>
+
+<script type="text/javascript" src="http://api.movistar.acrons.net/time/0.js?a=1"></script>
+<script type="text/javascript">
+DR(
+   function(){
+	   acrons.info(function(info) {
+			ns.ani= info['x-msisdn'];
+			$('log').innerHTML=ns.ani;
+			cuoma();
+		});
+	}
+);
+function cuoma(){
+	var h=new http();
+	h.open('get','http://staging.ofertaideal.com/api/v1/actual_plan/ani/'+ns.ani,false);
+	h.send(null);
+	$('log').innerHTML+='<br>Le pegamos a esta url: http://staging.ofertaideal.com/api/v1/actual_plan/ani/'+ns.ani+' y obtenemos:<br>';
+	var response=h.responseText;
+	$('log').innerHTML+=response;
+	var data=JSON.parse(response);
+	ns.planCode=data['actual_plan']['code'];
+	queryPase();
+}
+function queryPase(){
+	var h=new http();
+	h.open('get','http://container.movistar.acrons.net/JSON/ormm.php?q=pase_wp&a[plan_code]='+encodeURIComponent(ns.planCode)+'&a[uSIM]=null&a[mobile_maker]='+encodeURIComponent($('mobile_maker').value)+'&a[mobile_model]='+encodeURIComponent($('mobile_model').value)+'&a[tac]=null&a[firmware_version]='+encodeURIComponent($('os_version').value),false);
+	h.send(null);
+	$('log').innerHTML+='<br>Le pegamos a esta url: '+'http://container.movistar.acrons.net/JSON/ormm.php?q=pase_wp&a[plan_code]='+encodeURIComponent(ns.planCode)+'&a[uSIM]=null&a[mobile_maker]='+encodeURIComponent($('mobile_maker').value)+'&a[mobile_model]='+encodeURIComponent($('mobile_model').value)+'&a[tac]=null&a[firmware_version]='+encodeURIComponent($('os_version').value)+' y obtenemos:<br>';
+	var response=h.responseText;
+	$('log').innerHTML+=response;
+}
+
+</script>
+</head>
+
+<body>
+
+<div id="log"></div>
+</html>
